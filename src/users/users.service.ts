@@ -26,4 +26,29 @@ export class UsersService {
   remove(id: number) {
     return this.prisma.user.delete({ where: { id } });
   }
+
+  findUser(username: string) {
+    return this.prisma.user.findFirst({
+      where: {
+        OR: [{ email: username }, { cpf: username }, { pis: username }],
+      },
+    });
+  }
+
+  async validateUser({
+    username,
+    password,
+  }: {
+    username: string;
+    password: string;
+  }) {
+    const user = await this.findUser(username);
+
+    if (user && user.password === password) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
+  }
 }

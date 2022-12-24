@@ -35,6 +35,9 @@ $ npm install
 ## Running the app
 
 ```bash
+# database
+$ docker compose up
+
 # development
 $ npm run start
 
@@ -61,6 +64,7 @@ $ npm run test:cov
 ## To-do list
 
 - store hashed passwords, check [bcrypt](https://github.com/kelektiv/node.bcrypt.js#readme)
+- implement JWT
 
 ## Support
 

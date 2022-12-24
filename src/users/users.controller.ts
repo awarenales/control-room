@@ -6,11 +6,18 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { LoginUserDto } from './dto/login-user.dto';
+import {
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
 
 @Controller('users')
@@ -46,5 +53,16 @@ export class UsersController {
   @ApiOkResponse({ type: UserEntity })
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
+  }
+
+  @Post('login')
+  @ApiOkResponse({ type: UserEntity })
+  @ApiNotFoundResponse()
+  async validateUser(@Body() loginUserDto: LoginUserDto) {
+    const user = await this.usersService.validateUser(loginUserDto);
+    if (!user) {
+      throw new NotFoundException('User is not valid.');
+    }
+    return user;
   }
 }
